@@ -45,7 +45,7 @@
     "typescript": "^5.0.4"
   },
   "lint-staged": {
-    "src/**/*.ts": "yarn lint-prettier"
+    "src/**/*.ts": "pnpx lint-prettier"
   },
   "keywords": [],
   "license": "ISC"
