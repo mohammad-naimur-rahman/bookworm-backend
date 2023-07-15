@@ -1,6 +1,6 @@
 import { IBook } from './book.interface'
 import httpStatus from 'http-status'
-import { SortOrder, Types } from 'mongoose'
+import { SortOrder } from 'mongoose'
 import ApiError from '../../../errorHandlers/ApiError'
 import { paginationHelpers } from '../../../helpers/paginationHelpers'
 import {
@@ -19,7 +19,7 @@ const getAllBooksFromDB = async (
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelpers.calculatePagination(paginationOptions)
 
-  const andConditions: { [key: string]: any }[] = []
+  const andConditions: { [key: string]: unknown }[] = []
 
   if (searchTerm) {
     andConditions.push({
