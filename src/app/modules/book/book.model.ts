@@ -6,6 +6,7 @@ export const BookSchema = new Schema<IBook, BookModel>(
     title: {
       type: String,
       required: true,
+      unique: true,
     },
     author: {
       type: String,
