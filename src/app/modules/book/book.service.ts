@@ -16,8 +16,7 @@ const getAllBooksFromDB = async (
   paginationOptions: PaginationOptionsType
 ): Promise<GenericResponseType<Array<IBook>> | null> => {
   const { searchTerm, ...filtersData } = filters
-  //const { page, limit, skip, sortBy, sortOrder } =
-  const { page, limit, sortBy, sortOrder } =
+  const { page, limit, skip, sortBy, sortOrder } =
     paginationHelpers.calculatePagination(paginationOptions)
 
   const andConditions: { [key: string]: unknown }[] = []
@@ -46,17 +45,15 @@ const getAllBooksFromDB = async (
   if (sortBy && sortOrder) {
     sortConditions[sortBy] = sortOrder
   }
-  // const whereConditions =
-  //   andConditions.length > 0 ? { $and: andConditions } : {}
+  const whereConditions =
+    andConditions.length > 0 ? { $and: andConditions } : {}
 
-  // const result = await Book.find(whereConditions)
-  //   .sort(sortConditions)
-  //   .skip(skip)
-  //   .limit(limit)
+  const result = await Book.find(whereConditions)
+    .sort(sortConditions)
+    .skip(skip)
+    .limit(limit)
 
-  const result = await Book.find().sort(sortConditions)
-
-  const total = await Book.countDocuments()
+  const total = await Book.countDocuments(whereConditions)
 
   return {
     meta: {
