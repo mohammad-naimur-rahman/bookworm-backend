@@ -1,4 +1,5 @@
 export const filterableFields: Array<string> = [
+  'title',
   'author',
   'genre',
   'publicationDate',
