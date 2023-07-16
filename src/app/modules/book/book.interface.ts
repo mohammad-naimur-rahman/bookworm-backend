@@ -5,7 +5,7 @@ export type IBook = {
   author: string
   genre: 'fiction' | 'mystery' | 'science_fiction' | 'fantasy' | 'triller'
   image?: string
-  publicationDate: Date
+  publicationDate: string
 }
 
 export type BookModel = Model<IBook, Record<string, unknown>>

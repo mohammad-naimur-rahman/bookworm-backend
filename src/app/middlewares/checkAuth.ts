@@ -20,7 +20,6 @@ const checkAuth = async (
 
   try {
     const decodeValue = await admin.auth().verifyIdToken(token)
-    console.log(decodeValue)
     if (decodeValue) {
       next()
     }

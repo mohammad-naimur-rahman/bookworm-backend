@@ -17,23 +17,23 @@ const getAllBooks: RequestHandler = asyncHandler(async (req, res) => {
 
   const filters = pick(req.query, searchAndFilterableFields)
 
-  const cows = await BookService.getAllBooksFromDB(filters, paginationOptions)
+  const books = await BookService.getAllBooksFromDB(filters, paginationOptions)
   sendResponse<Array<IBook>>(res, {
     success: true,
     statusCode: httpStatus.OK,
     message: 'Retrieved all books successfully',
-    meta: cows?.meta,
-    data: cows?.data,
+    meta: books?.meta,
+    data: books?.data,
   })
 })
 
 const createBook: RequestHandler = asyncHandler(async (req, res) => {
-  const createdCow = await BookService.createBookInDB(req.body)
+  const createdBook = await BookService.createBookInDB(req.body)
   sendResponse<IBook>(res, {
     success: true,
     statusCode: httpStatus.OK,
     message: 'Book created successfully',
-    data: createdCow,
+    data: createdBook,
   })
 })
 
@@ -41,12 +41,12 @@ const getBook: RequestHandler = asyncHandler(async (req, res) => {
   const {
     params: { id },
   } = req
-  const cow = await BookService.getBookFromDB(id)
+  const book = await BookService.getBookFromDB(id)
   sendResponse<IBook>(res, {
     success: true,
     statusCode: httpStatus.OK,
     message: 'Retrieved book successfully',
-    data: cow,
+    data: book,
   })
 })
 
@@ -59,12 +59,12 @@ const updateBook: RequestHandler = asyncHandler(async (req, res) => {
     body,
     params: { id },
   } = req as AuthenticatedRequest
-  const updatedCow = await BookService.updateBookInDB(id, body)
+  const updatedBook = await BookService.updateBookInDB(id, body)
   sendResponse<IBook>(res, {
     success: true,
     statusCode: httpStatus.OK,
     message: 'Book updated successfully',
-    data: updatedCow,
+    data: updatedBook,
   })
 })
 

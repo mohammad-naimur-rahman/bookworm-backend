@@ -23,7 +23,7 @@ export const BookSchema = new Schema<IBook, BookModel>(
       required: false,
     },
     publicationDate: {
-      type: Date,
+      type: String,
       required: true,
     },
   },
