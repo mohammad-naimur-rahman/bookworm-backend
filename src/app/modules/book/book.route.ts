@@ -18,7 +18,11 @@ router
 router
   .route('/:id')
   .get(BookController.getBook)
-  .patch(BookController.updateBook)
-  .delete(BookController.deleteBook)
+  .patch(
+    validateRequest(BookValidation.updateBookSchema),
+    checkAuth,
+    BookController.updateBook
+  )
+  .delete(checkAuth, BookController.deleteBook)
 
 export const BookRoutes = router
