@@ -16,6 +16,9 @@ const createBookSchema = z.object({
     publicationDate: z.string({
       required_error: 'Publication Date is required',
     }),
+    user: z.string({
+      required_error: 'User is required!',
+    }),
   }),
 })
 
@@ -26,6 +29,7 @@ const updateBookSchema = z.object({
     genre: z.string().optional(),
     image: z.string().optional(),
     publicationDate: z.string().optional(),
+    user: z.string({ required_error: 'User is required' }),
   }),
 })
 

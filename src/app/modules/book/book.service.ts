@@ -1,6 +1,6 @@
 import { IBook } from './book.interface'
 import httpStatus from 'http-status'
-import { SortOrder } from 'mongoose'
+import { SortOrder, Types } from 'mongoose'
 import ApiError from '../../../errorHandlers/ApiError'
 import { paginationHelpers } from '../../../helpers/paginationHelpers'
 import {
@@ -10,6 +10,7 @@ import {
 import { GenericResponseType } from './../../../types/common/genericResponse'
 import { filterableFields } from './book.constants'
 import { Book } from './book.model'
+import { User } from '../auth/auth.model'
 
 const getAllBooksFromDB = async (
   filters: FiltersType,
@@ -66,6 +67,9 @@ const getAllBooksFromDB = async (
 }
 
 const createBookInDB = async (payload: IBook): Promise<IBook | null> => {
+  if (!payload.user) {
+    throw new ApiError(httpStatus.BAD_REQUEST, `User is required!`)
+  }
   const createdBook = await Book.create(payload)
   if (!createdBook) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create book!')
@@ -85,12 +89,31 @@ const getBookFromDB = async (id: string): Promise<IBook | null> => {
 
 const updateBookInDB = async (
   id: string,
-  payload: Partial<IBook>
+  payload: Partial<IBook>,
+  email: string
 ): Promise<IBook | null> => {
   const book = await Book.findById(id)
 
   if (!book) {
     throw new ApiError(httpStatus.NOT_FOUND, `No book found with id ${id}`)
+  }
+  const bookCreatorId = Types.ObjectId.prototype.toString.call(book.user)
+
+  const user = await User.findById(payload.user)
+
+  if (!user) {
+    throw new ApiError(
+      httpStatus.NOT_FOUND,
+      `No user found with id ${payload.user}`
+    )
+  }
+
+  if (email !== user.email) {
+    throw new ApiError(httpStatus.NOT_FOUND, `User doesn't match`)
+  }
+
+  if (bookCreatorId !== payload.user) {
+    throw new ApiError(httpStatus.BAD_REQUEST, `You did't create the book`)
   }
 
   const updatedBook = await Book.findOneAndUpdate({ _id: id }, payload, {
@@ -104,12 +127,28 @@ const updateBookInDB = async (
   return updatedBook
 }
 
-const deleteBookFromDB = async (id: string): Promise<IBook | null> => {
+const deleteBookFromDB = async (
+  id: string,
+  email: string
+): Promise<IBook | null> => {
   const book = await Book.findById(id)
 
   if (!book) {
     throw new ApiError(httpStatus.NOT_FOUND, `No book found with id ${id}`)
   }
+  const user = await User.findById(book.user)
+
+  if (!user) {
+    throw new ApiError(
+      httpStatus.NOT_FOUND,
+      `No user found with id ${book.user}`
+    )
+  }
+
+  if (user.email !== email) {
+    throw new ApiError(httpStatus.BAD_REQUEST, `You didn't create this book`)
+  }
+
   const result = await Book.findByIdAndDelete(id)
 
   if (result === null) {

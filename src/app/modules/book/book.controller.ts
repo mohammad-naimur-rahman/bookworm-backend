@@ -50,16 +50,17 @@ const getBook: RequestHandler = asyncHandler(async (req, res) => {
   })
 })
 
-type AuthenticatedRequest = Request & {
-  user: Partial<IBook>
+export type AuthenticatedRequest = Request & {
+  email: string
 }
 
 const updateBook: RequestHandler = asyncHandler(async (req, res) => {
   const {
     body,
     params: { id },
+    email,
   } = req as AuthenticatedRequest
-  const updatedBook = await BookService.updateBookInDB(id, body)
+  const updatedBook = await BookService.updateBookInDB(id, body, email)
   sendResponse<IBook>(res, {
     success: true,
     statusCode: httpStatus.OK,
@@ -71,8 +72,9 @@ const updateBook: RequestHandler = asyncHandler(async (req, res) => {
 const deleteBook: RequestHandler = asyncHandler(async (req, res) => {
   const {
     params: { id },
+    email,
   } = req as AuthenticatedRequest
-  await BookService.deleteBookFromDB(id)
+  await BookService.deleteBookFromDB(id, email)
   sendResponse<string>(res, {
     success: true,
     statusCode: httpStatus.OK,

@@ -1,13 +1,15 @@
+/* eslint-disable no-extra-semi */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from 'http-status'
 import ApiError from '../../errorHandlers/ApiError'
 import { NextFunction, Request, Response } from 'express'
 import admin from '../../config/firebase-config'
 
-const checkAuth = async (
+const checkAuth = async <T>(
   req: Request,
   res: Response,
   next: NextFunction
-): Promise<void> => {
+): Promise<T | void> => {
   const {
     headers: { authorization },
   } = req
@@ -21,6 +23,7 @@ const checkAuth = async (
   try {
     const decodeValue = await admin.auth().verifyIdToken(token)
     if (decodeValue) {
+      ;(req as any).email = decodeValue.firebase.identities.email[0]
       next()
     }
   } catch (e) {
