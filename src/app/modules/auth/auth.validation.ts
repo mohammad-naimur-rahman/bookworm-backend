@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-const checkTokenForLoginSchema = z.object({
+const checkTokenForAuthSchema = z.object({
   headers: z.object({
     authorization: z.string({
       required_error: 'token is required',
@@ -14,5 +14,5 @@ const checkTokenForLoginSchema = z.object({
 })
 
 export const AuthValidation = {
-  checkTokenForLoginSchema,
+  checkTokenForAuthSchema,
 }
