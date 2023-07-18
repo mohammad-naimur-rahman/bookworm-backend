@@ -25,4 +25,12 @@ router
   )
   .delete(checkAuth, BookController.deleteBook)
 
+router
+  .route('/comment/:id')
+  .post(
+    validateRequest(BookValidation.createReviewSchema),
+    checkAuth,
+    BookController.createReview
+  )
+
 export const BookRoutes = router

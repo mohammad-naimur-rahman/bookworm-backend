@@ -2,6 +2,7 @@ import { Model, Types } from 'mongoose'
 
 export type Review = {
   review: string
+  user?: Types.ObjectId
 }
 
 export type IBook = {

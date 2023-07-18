@@ -33,7 +33,17 @@ const updateBookSchema = z.object({
   }),
 })
 
+const createReviewSchema = z.object({
+  body: z.object({
+    review: z.string({
+      required_error: 'Review text is required',
+    }),
+    user: z.string().optional(),
+  }),
+})
+
 export const BookValidation = {
   createBookSchema,
   updateBookSchema,
+  createReviewSchema,
 }

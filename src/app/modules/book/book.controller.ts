@@ -83,10 +83,26 @@ const deleteBook: RequestHandler = asyncHandler(async (req, res) => {
   })
 })
 
+const createReview: RequestHandler = asyncHandler(async (req, res) => {
+  const {
+    params: { id },
+    body,
+    email,
+  } = req as AuthenticatedRequest
+  const data = await BookService.createCommentInDB(id, body, email)
+  sendResponse<IBook>(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Comment added successfully',
+    data,
+  })
+})
+
 export const BookController = {
   getAllBooks,
   createBook,
   getBook,
   updateBook,
   deleteBook,
+  createReview,
 }

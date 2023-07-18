@@ -1,4 +1,4 @@
-import { IBook } from './book.interface'
+import { IBook, Review } from './book.interface'
 import httpStatus from 'http-status'
 import { SortOrder, Types } from 'mongoose'
 import ApiError from '../../../errorHandlers/ApiError'
@@ -78,7 +78,13 @@ const createBookInDB = async (payload: IBook): Promise<IBook | null> => {
 }
 
 const getBookFromDB = async (id: string): Promise<IBook | null> => {
-  const book = await Book.findById(id)
+  const book = await Book.findById(id).populate({
+    path: 'reviews',
+    populate: {
+      path: 'user',
+      select: 'name',
+    },
+  })
 
   if (!book) {
     throw new ApiError(httpStatus.NOT_FOUND, `No book found with id ${id}`)
@@ -158,10 +164,52 @@ const deleteBookFromDB = async (
   return result
 }
 
+const createCommentInDB = async (
+  id: string,
+  payload: Review,
+  email
+): Promise<IBook | null> => {
+  const book = await Book.findById(id)
+
+  if (!book) {
+    throw new ApiError(httpStatus.NOT_FOUND, `No book found with id ${id}`)
+  }
+
+  const user = await User.findOne({ email }).select('id').lean()
+
+  if (!user) {
+    throw new ApiError(
+      httpStatus.NOT_FOUND,
+      `No user found with email: ${email}`
+    )
+  }
+
+  const commenterId = Types.ObjectId.prototype.toString.call(user._id)
+
+  const updatedBook = await Book.findByIdAndUpdate(
+    book._id,
+    {
+      $push: {
+        reviews: { review: payload.review, user: commenterId },
+      },
+    },
+    { new: true }
+  ).populate({
+    path: 'reviews',
+    populate: {
+      path: 'user',
+      select: 'name',
+    },
+  })
+
+  return updatedBook
+}
+
 export const BookService = {
   getAllBooksFromDB,
   createBookInDB,
   getBookFromDB,
   updateBookInDB,
   deleteBookFromDB,
+  createCommentInDB,
 }
