@@ -5,7 +5,10 @@ import { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier'
 import { IUser } from './auth.interface'
 import { User } from './auth.model'
 
-const loginUser = async (authorization, email): Promise<IUser | null> => {
+const loginUser = async (
+  authorization: string | undefined,
+  email: string
+): Promise<IUser | null> => {
   const token = authorization?.split(' ')[1]
 
   if (!token) {
@@ -26,7 +29,7 @@ const loginUser = async (authorization, email): Promise<IUser | null> => {
 }
 
 const signupUser = async (
-  authorization,
+  authorization: string | undefined,
   body: IUser
 ): Promise<IUser | null> => {
   const { email } = body

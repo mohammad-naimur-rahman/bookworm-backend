@@ -93,9 +93,13 @@ const getBookFromDB = async (id: string): Promise<IBook | null> => {
   return book
 }
 
+type CustomPayload = Partial<IBook> & {
+  user: string
+}
+
 const updateBookInDB = async (
   id: string,
-  payload: Partial<IBook>,
+  payload: CustomPayload,
   email: string
 ): Promise<IBook | null> => {
   const book = await Book.findById(id)
@@ -167,7 +171,7 @@ const deleteBookFromDB = async (
 const createCommentInDB = async (
   id: string,
   payload: Review,
-  email
+  email: string
 ): Promise<IBook | null> => {
   const book = await Book.findById(id)
 
